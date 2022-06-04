@@ -11,10 +11,14 @@ class Profile(models.Model):
     date_created = models.DateTimeField(auto_now_add=True, verbose_name='Date Created')
     date_updated = models.DateTimeField(auto_now=True, verbose_name='Date Updated')
 
-    def get_followers(self): # people who follow the user
+    
+    def get_posts(self):
+        return Post.objects.filter(user=self).all()
+
+    def get_followers(self): 
         return self.followers.all()
 
-    def get_following(self): # people who the user follow
+    def get_following(self): 
         return self.following.all()
     
     def __str__(self):
@@ -40,6 +44,14 @@ class Post(models.Model):
 
     def get_posts(self):
         return Post.objects.filter(user=self).all()
+    
+    def get_likes(self):
+        likes = Like.objects.filter(post=self)
+        return len(likes)
+
+    def get_comments(self):
+        comments = Comment.objects.filter(post=self)
+        return comments
 
     @classmethod
     def update_caption(cls, id, title, caption, author, profile):
