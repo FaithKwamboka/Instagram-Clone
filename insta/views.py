@@ -78,4 +78,4 @@ def Register(request):
             messages.success(request, '✅ Registration Successful! An Activation Link Has Been Sent To Your Email')
             return redirect('Register')
 
-    return render(request, 'Register.html')
+    return render(request, 'insta/register.html')
