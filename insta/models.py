@@ -51,3 +51,12 @@ class Post(models.Model):
 
     class Meta:
         verbose_name_plural = 'Posts'
+        
+        
+class Like(models.Model):
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+
+class Follow(models.Model):
+    user = models.ForeignKey(User, related_name='following', on_delete=models.CASCADE)
+    following = models.ForeignKey(User, related_name='followers', on_delete=models.CASCADE)
