@@ -1,0 +1,18 @@
+{% autoescape off %}
+
+Hey {{user.first_name}},
+
+Thank you for signing up with us.
+
+Please use the link below to verify your Email Address ({{ user.email }}):
+
+https://{{ domain }}{% url 'ActivateAccount' uidb64=uid token=token %}
+
+If the link doesn't work, please copy and paste the URL in a new browser window instead.
+
+Regards,
+Kwash Gram 
+{% endautoescape %}
+
+
+
