@@ -60,3 +60,19 @@ class Like(models.Model):
 class Follow(models.Model):
     user = models.ForeignKey(User, related_name='following', on_delete=models.CASCADE)
     following = models.ForeignKey(User, related_name='followers', on_delete=models.CASCADE)
+
+
+class Comment(models.Model):
+    opinion = models.CharField(max_length=2200, verbose_name='Comment', null=False)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+
+    def display_comment(self,post_id):
+        comments = Comment.objects.filter(self = post_id)
+        return comments
+
+    def __str__(self):
+        return str(self.comment)
+
+    class Meta:
+        verbose_name_plural = 'Comments'
