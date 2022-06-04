@@ -80,24 +80,3 @@ def Register(request):
 
     return render(request, 'register.html')
 
-def Login(request):
-    if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
-
-        user = authenticate(username=username, password=password)
-
-
-        if not User.objects.filter(username=username).exists():
-            messages.error(request, '⚠️ Username Does Not Exist! Choose Another One')
-            return redirect('Login')
-
-        if user is None:
-            messages.error(request, '⚠️ Username/Password Is Incorrect or Account Is Not Activated!! Please Try Again')
-            return redirect('Login')
-
-        if user is not None:
-            login(request, user)
-            return redirect(reverse('Home'))
-        
-    return render(request, 'login.html')
