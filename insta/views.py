@@ -75,7 +75,29 @@ def Register(request):
 
         if not context['has_error']:
             send_activation_email(user, request)
-            messages.success(request, '✅ Registration Successful! An Activation Link Has Been Sent To Your Email')
+            messages.success(request, '✅ Registration Successful! An activation link has been sent to your email')
             return redirect('Register')
 
-    return render(request, 'insta/register.html')
+    return render(request, 'register.html')
+
+def Login(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+
+        user = authenticate(username=username, password=password)
+
+
+        if not User.objects.filter(username=username).exists():
+            messages.error(request, '⚠️ Username Does Not Exist! Choose Another One')
+            return redirect('Login')
+
+        if user is None:
+            messages.error(request, '⚠️ Username/Password Is Incorrect or Account Is Not Activated!! Please Try Again')
+            return redirect('Login')
+
+        if user is not None:
+            login(request, user)
+            return redirect(reverse('Home'))
+        
+    return render(request, 'login.html')
