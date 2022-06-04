@@ -20,9 +20,9 @@
         <form action="" method="POST">
             {% csrf_token %}
             <h1 class="flex justify-content-center text-center">
-                <img src={% static "photos/instagram.png" %} alt="Instagram logo" title="Instagram logo" />
+                {% comment %} <img src={% static "photos/instagram.png" %} alt="Instagram logo" title="Instagram logo" /> {% endcomment %}
             </h1>
-            <p class="text-muted text-center">Sign up! Have fun viewing pics and videos from yur pals!</p>
+            <p class="text-muted text-center">Sign up! Have fun viewing pics and videos from your pals!</p>
             <div class="panel register flex justify-content-center">
                 <div class="hint-text text-center" style="font-size: small;">Already Have An Account? <a href="{% url 'Login' %}" name = 'Login'>Log In</a></div>
             </div>
