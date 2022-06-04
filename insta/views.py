@@ -101,3 +101,17 @@ def Login(request):
             return redirect(reverse('Home'))
         
     return render(request, 'login.html')
+
+
+@login_required(login_url='Login')
+def Logout(request):
+    logout(request)
+    messages.success(request, '✅ Successfully Logged Out!')
+    return redirect(reverse('Login'))
+
+@login_required(login_url='Login')
+def Home(request):
+    posts = Post.objects.order_by('-date_created').all()
+    profiles = Profile.objects.all()
+    return render(request, 'Index.html', {'posts':posts, 'profiles':profiles})
+
