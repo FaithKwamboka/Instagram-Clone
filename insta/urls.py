@@ -5,7 +5,6 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     re_path(r'^$', views.home,name='home'),
-    re_path(r'^signup/$', views.signup, name='signup'),
     re_path(r'^activate/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',
         views.activate, name='activate'),
     re_path(r'^accounts/profile/', views.add_profile, name='add_profile'),
@@ -17,4 +16,8 @@ urlpatterns = [
     re_path(r'^comment/(?P<pk>\d+)',views.add_comment,name='comment'),
     re_path(r'^like/(?P<operation>.+)/(?P<pk>\d+)',views.like, name='like'),
     re_path(r'^all/(?P<pk>\d+)', views.all, name='all'),
+
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

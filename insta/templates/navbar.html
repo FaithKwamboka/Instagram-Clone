@@ -1,3 +1,5 @@
+{% load bootstrap4 %}
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -10,7 +12,7 @@
 <body>
   <nav class="navbar navbar-expand-lg navbar-light sticky-top" style="background-color: #fff;" style="font-size: 25px">
     <div class="container">
-      <a class="navbar-brand ml-1" href="{% url 'home' %}" style="font-size: 25px"><i>Kwash Gram</i> |</a>
+      <a class="navbar-brand ml-1" href="{% url 'home' %}" style="font-size: 30px;font-family: 'Calligraffitti', cursive;"><i>Kwash Gram</i> </a>
 
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -19,7 +21,7 @@
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <form class="form-inline mx-auto" role="search" action="{% url 'search_results' %}" method="get">
           <div class="form-group">
-            <input type="text" class="form-control" role="search" placeholder="&#xf002; search username" aria-label="Search" name="username">
+            <input type="text" class="form-control" role="search" placeholder=" search username" aria-label="Search" name="username">
           </div>
         </form>
         <ul class="navbar-nav">
@@ -29,8 +31,17 @@
             <a class="nav-link" href="/profile/{{user.id}}" title="profile"><i class="far fa-user-circle fa-2x"></i></i></a>
           </li>
           <li class="nav-item">
+            <p><a href="{% url 'upload' %}"><i class="fas fa-plus-circle"></i></a>
+          </li>
+
+          <li class="nav-item">
+            <a href="{% url 'add_profile' %}"><i class="fas fa-plus-circle"></i></a>
+          </li>
+          <li class="nav-item">
             <a class="nav-link" href="/logout" title="Logout"><i class="fas fa-sign-out-alt fa-2x"></i></i></a>
           </li>
+
+
         </ul>
       </div>
     </div>

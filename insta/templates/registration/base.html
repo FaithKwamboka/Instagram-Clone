@@ -1,5 +1,5 @@
-{% load bootstrap3 %}
-{% load staticfiles %}
+{% load bootstrap4 %}
+{% load static %}
 <!DOCTYPE html>
 <html>
 
@@ -16,6 +16,8 @@
 
   {% block styles %}
     {% bootstrap_css %}
+    <link rel="stylesheet" href="{% static 'css/sign.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Calligraffitti&family=Oleo+Script+Swash+Caps&family=Poppins:wght@500&display=swap" rel="stylesheet">
   {% endblock %}
 
 </head>
@@ -28,6 +30,8 @@
   {% block scripts %}
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
+    <script src="{% static 'js/app.js' %}"></script>
+    <script src="{% static 'js/particles.js' %}"></script>
     {% bootstrap_javascript %}
   {% endblock %}
 

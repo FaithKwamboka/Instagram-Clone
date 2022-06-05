@@ -18,9 +18,13 @@ from django.urls import re_path, include
 from django.conf.urls.static import static
 from . import settings
 from django.contrib.auth import views
+from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     re_path(r'^admin/', admin.site.urls),
     re_path(r'',include('insta.urls')),
+    re_path(r'^accounts/', include('django_registration.backends.one_step.urls')),
     re_path(r'^tinymce/', include('tinymce.urls')),
+    re_path('accounts/', include('django.contrib.auth.urls')),
+    re_path('logout/', auth_views.logout_then_login),
 ]

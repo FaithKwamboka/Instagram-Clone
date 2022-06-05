@@ -13,30 +13,30 @@ from django.contrib.auth.models import User
 from django.core.mail import EmailMessage
 
 # Create your views here.
-def signup(request):
-    if request.method == 'POST':
-        form = RegisterForm(request.POST)
-        if form.is_valid():
-            current_user = form.save(commit=False)
-            current_user.is_active = False
-            current_user.save()
-            current_site = get_current_site(request)
-            mail_subject = 'Activate your Kwash Gram account.'
-            message = render_to_string('acc_active_email.html', {
-                'user': current_user,
-                'domain': current_site.domain,
-                'uid':urlsafe_base64_encode(force_bytes(current_user.pk)),
-                'token':account_activation_token.make_token(current_user),
-            })
-            to_email = form.cleaned_data.get('email')
-            email = EmailMessage(
-                        mail_subject, message, to=[to_email]
-            )
-            email.send()
-            return HttpResponse('Please confirm your email address to complete the registration')
-    else:
-        form = RegisterForm()
-    return render(request, 'registration/register.html', {'form': form})
+# def signup(request):
+#     if request.method == 'POST':
+#         form = RegisterForm(request.POST)
+#         if form.is_valid():
+#             current_user = form.save(commit=False)
+#             current_user.is_active = False
+#             current_user.save()
+#             current_site = get_current_site(request)
+#             mail_subject = 'Activate your Kwash Gram account.'
+#             message = render_to_string('acc_active_email.html', {
+#                 'user': current_user,
+#                 'domain': current_site.domain,
+#                 'uid':urlsafe_base64_encode(force_bytes(current_user.pk)),
+#                 'token':account_activation_token.make_token(current_user),
+#             })
+#             to_email = form.cleaned_data.get('email')
+#             email = EmailMessage(
+#                         mail_subject, message, to=[to_email]
+#             )
+#             email.send()
+#             return HttpResponse('Please confirm your email address to complete the registration')
+#     else:
+#         form = RegisterForm()
+#     return render(request, 'registration/register.html', {'form': form})
 
 def activate(request, uidb64, token):
     try:
@@ -53,7 +53,7 @@ def activate(request, uidb64, token):
         return HttpResponse('Activation link is invalid!')
     
     
-@login_required(login_url='/login_backend/')
+@login_required
 def home(request):
     images = Image.get_images()
     comments = Comment.get_comment()
@@ -74,16 +74,22 @@ def home(request):
     return render(request,"index.html",{"images":images, "comments":comments,"form": form,"profile":profile})
 
 
-@login_required(login_url='/accounts/login/')
+@login_required
 def profile(request,profile_id):
 
     profile = Profile.objects.get(pk = profile_id)
     images = Image.objects.filter(profile_id=profile).all()
 
-    return render(request,"user_profile.html",{"profile":profile,"images":images})
+    return render(request,"profile.html",{"profile":profile,"images":images})
 
+# def profile(request):
+#     userupdate = UpdateUserForm()
+#     context = {
+#         'userupdate': userupdate,
+#     }
+#     return render(request, 'user_profile.html', context)
 
-@login_required(login_url='/accounts/login/')
+@login_required
 def search_results(request):
     current_user = request.user
     profile = Profile.get_profile()
@@ -101,7 +107,7 @@ def search_results(request):
         return render(request,'search.html',{"message":message})
 
 
-@login_required(login_url='/accounts/login/')
+@login_required
 def get_image_by_id(request,image_id):
 
     image = Image.objects.get(id = image_id)
@@ -121,7 +127,7 @@ def get_image_by_id(request,image_id):
 
     return render(request,"pic.html", {"image":image,"comment":comment,"form": form})
 
-@login_required(login_url='/accounts/login/')
+@login_required
 def add_profile(request):
     current_user = request.user
     if request.method == 'POST':
@@ -135,3 +141,85 @@ def add_profile(request):
     else:
         form = NewProfileForm()
     return render(request, 'new_profile.html', {"form": form})
+
+@login_required
+def update_profile(request):
+    current_user = request.user
+    if request.method == 'POST':
+        form = NewProfileForm(request.POST, request.FILES)
+        if form.is_valid():
+            profile = form.save(commit=False)
+            profile.user = current_user
+            profile.save()
+        return redirect('home')
+
+    else:
+        form = NewProfileForm()
+    return render(request, 'update_profile.html', {"form": form})
+
+
+@login_required
+def update_image(request):
+    current_user = request.user
+    profiles = Profile.get_profile()
+    for profile in profiles:
+        if profile.user.id == current_user.id:
+            if request.method == 'POST':
+                form = UploadForm(request.POST, request.FILES)
+                if form.is_valid():
+                    upload = form.save(commit=False)
+                    upload.posted_by = current_user
+                    upload.profile = profile
+                    upload.save()
+                    return redirect('home')
+            else:
+                form = UploadForm()
+            return render(request, 'upload.html', {"user": current_user, "form": form})
+
+
+@login_required
+def add_comment(request, pk):
+    image = get_object_or_404(Image, pk=pk)
+    current_user = request.user
+    if request.method == 'POST':
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.image = image
+            comment.poster = current_user
+            comment.save()
+            return redirect('home')
+    else:
+        form = CommentForm()
+        return render(request, 'comment.html', {"user": current_user, "comment_form": form})
+
+@login_required
+def like(request,operation,pk):
+    image = get_object_or_404(Image,pk=pk)
+    
+    if operation == 'like':
+        image.likes += 1
+        image.save()
+    elif operation =='unlike':
+        image.likes -= 1
+        image.save()
+    return redirect('home')
+
+@login_required
+def all(request, pk):
+    profile = Profile.objects.get(pk=pk)
+    images = Image.objects.all().filter(posted_by_id=pk)
+    content = {
+        "profile": profile,
+        'images': images,
+    }
+    return render(request, 'all.html', content)
+
+def follow(request,operation,id):
+    current_user=User.objects.get(id=id)
+    if operation=='follow':
+        Follow.follow(request.user,current_user)
+        return redirect('home')
+    elif operation=='unfollow':
+        Follow.unfollow(request.user,current_user)
+        return redirect('home')

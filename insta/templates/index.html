@@ -1,23 +1,25 @@
 {%extends 'base.html'%}
 {% block content %}
 {{ block.super}}
-{% load bootstrap3 %}
+{% load bootstrap4 %}
 
 <br>
 <br>
 <script src="https://use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
 <div class="container-fluid">
 
-  <p><a href="{% url 'add_profile' %}" class="btn btn-info">+ profile</a></p>
-  <p><a href="{% url 'upload' %}" class="btn btn-info">+ photo</a>
+  {% comment %} <p><a href="{% url 'add_profile' %}" class="btn btn-info">+ profile</a></p>
+  <p><a href="{% url 'upload' %}" class="btn btn-info">+ post</a></p> {% endcomment %}
 
     <div class="row">
     <div class="col-1"></div>
     <div class="col-9" style="max-width:40rem; margin-top:20px;">
       {% for image in images %}
 
-      <div class="card mr-0" style="max-width:40rem; margin-top:10px;">
-        <div class="card-header"><img class="img-fluid rounded-circle" src="{{image.profile.profile_photo.url}}" style="height:40px;margin-top:5px;margin-bottom:5px;">
+      <div class="card mr-0" style="max-width:40rem; margin-top:10px;"><br>
+        <a href="{% url 'add_profile' %}" class="btn btn-info">+ Profile</a><br>
+        <a href="{% url 'upload' %}" class="btn btn-info">+ Post</a><br>
+        <div class="card-header"><img class="img-fluid rounded-circle" src="{{image.profile.profile_photo.url}}" style="height:50px;margin-top:5px;margin-bottom:5px;">
           <a href="/profile/{{user.id}}">
             <label>{{image.posted_by}}</label></a>
         </div>
@@ -107,7 +109,8 @@
       </div>
 
       <div class="modal-body">
-        <img class="card-img-top" class="img-responsive" src="{{image.insta_image.url}}" data-target="#extraModal{{image.id}}" data-toggle="modal" size="100px200">
+        <img class="card-img-top" class="img-responsive" src="{{image.insta_image.url}}" data-target="#extraModal{{image.id}}" data-toggle="modal" size="80px100"style="height:500px;width:400px;"><br>
+        <br>
         <p>About: {{image.caption}}</p>
         <label>{{image.likes}} Likes</label>
         <div class="modal-footer">

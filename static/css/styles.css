@@ -1,0 +1,14 @@
+#particles-js {
+    height: 90vh;
+    width: 100vw;
+    background-color: black;
+    position: relative;
+  }
+
+body{
+  background-image: url("/static/photos/back_4.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+
+}
+  
