@@ -1,0 +1,6 @@
+<h1>Hello {user.username}</h1>
+
+    <h5>Welcome to the Kwash Gram. Post pics, get comments, Follow and be followed by your pals.
+    Thank you!
+    Regards,</h5>
+    
