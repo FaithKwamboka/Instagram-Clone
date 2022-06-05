@@ -1,117 +1,39 @@
-from django.shortcuts import redirect, render
-from .models import Follow, Like, Post, Profile, Comment
+from django.shortcuts import render,redirect,get_object_or_404
+from django.http  import HttpResponse,Http404,HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
-from django.contrib import messages
-from django.contrib.auth import authenticate, login, logout
-from django.urls import reverse
-from  insta_clone import settings
-# from .forms import UpdateUserForm, UpdateProfileForm, AddPostForm
-from django.contrib.auth.forms import PasswordChangeForm
-from django.contrib.auth import update_session_auth_hash
+from .models import *
+from .forms import *
+from django.contrib.auth import login, authenticate
 from django.contrib.sites.shortcuts import get_current_site
-from django.utils.encoding import force_bytes
-from django.utils.http import urlsafe_base64_encode
+from django.utils.encoding import force_bytes, force_text
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.template.loader import render_to_string
-# from .tokens import account_activation_token
-from django.utils.encoding import force_str
-from django.utils.http import urlsafe_base64_decode
-from .models import Follow, Like, Post, Profile, Comment
+from .tokens import account_activation_token
+from django.contrib.auth.models import User
 from django.core.mail import EmailMessage
-import threading
-
-class EmailThread(threading.Thread):
-    
-    def __init__(self, email):
-        self.email = email
-        threading.Thread.__init__(self)
-
-    def run(self):
-        self.email.send()
-
-def send_activation_email(user, request):
-    current_site = get_current_site(request)
-    email_subject = 'Activate Your Kwash Gram Account'
-    email_body = render_to_string('Account Activation Email.html', {
-        'user': user,
-        'domain': current_site,
-        'uid': urlsafe_base64_encode(force_bytes(user.pk)),
-        # 'token': account_activation_token.make_token(user)
-    })
-
-    email = EmailMessage(subject=email_subject, body=email_body,
-    from_email=settings.EMAIL_FROM_USER, to=[user.email])
-
-    if not settings.TESTING:
-        EmailThread(email).start()
 
 # Create your views here.
-def Register(request):
+def signup(request):
     if request.method == 'POST':
-        context = {'has_error': False}
-        first_name = request.POST['first_name']
-        last_name = request.POST['last_name']
-        username = request.POST['username']
-        email = request.POST['email']
-        password1 = request.POST['password1']
-        password2 = request.POST['password2']
-
-        if password1 != password2:
-            messages.error(request, '⚠️ Passwords Do Not Match! Try Again')
-            return redirect('Register')
-
-        if User.objects.filter(username=username).exists():
-            messages.error(request, '⚠️ Username Already Exists! Choose Another One')
-            return redirect('Register')
-
-        if User.objects.filter(email=email).exists():
-            messages.error(request, '⚠️ Email Address Already Exists! Choose Another One')
-            return redirect('Register')
-
-        user = User.objects.create_user(first_name=first_name, last_name=last_name, username=username, email=email)
-        user.set_password(password1)
-        user.is_active = False
-        user.save()
-
-        if not context['has_error']:
-            send_activation_email(user, request)
-            messages.success(request, '✅ Registration Successful! An activation link has been sent to your email')
-            return redirect('Register')
-
-    return render(request, 'register.html')
-
-def Login(request):
-    if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
-
-        user = authenticate(username=username, password=password)
-
-
-        if not User.objects.filter(username=username).exists():
-            messages.error(request, '⚠️ Username Does Not Exist! Choose Another One')
-            return redirect('Login')
-
-        if user is None:
-            messages.error(request, '⚠️ Username/Password Is Incorrect or Account Is Not Activated!! Please Try Again')
-            return redirect('Login')
-
-        if user is not None:
-            login(request, user)
-            return redirect(reverse('Home'))
-        
-    return render(request, 'login.html')
-
-
-@login_required(login_url='Login')
-def Logout(request):
-    logout(request)
-    messages.success(request, '✅ Successfully Logged Out!')
-    return redirect(reverse('Login'))
-
-@login_required(login_url='Login')
-def Home(request):
-    posts = Post.objects.order_by('-date_created').all()
-    profiles = Profile.objects.all()
-    return render(request, 'Index.html', {'posts':posts, 'profiles':profiles})
-
+        form = RegisterForm(request.POST)
+        if form.is_valid():
+            current_user = form.save(commit=False)
+            current_user.is_active = False
+            current_user.save()
+            current_site = get_current_site(request)
+            mail_subject = 'Activate your Kwash Gram account.'
+            message = render_to_string('acc_active_email.html', {
+                'user': current_user,
+                'domain': current_site.domain,
+                'uid':urlsafe_base64_encode(force_bytes(current_user.pk)),
+                'token':account_activation_token.make_token(current_user),
+            })
+            to_email = form.cleaned_data.get('email')
+            email = EmailMessage(
+                        mail_subject, message, to=[to_email]
+            )
+            email.send()
+            return HttpResponse('Please confirm your email address to complete the registration')
+    else:
+        form = RegisterForm()
+    return render(request, 'registration/register.html', {'form': form})
