@@ -17,12 +17,6 @@ from django.contrib.messages import constants as messages
 from decouple import config,Csv
 
 
-# cloudinary.config( 
-#   cloud_name = os.environ.get('CLOUD_NAME'), 
-#   api_key = os.environ.get('API_KEY'), 
-#   api_secret = os.environ.get('API_SECRET')
-# )
-
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -78,9 +72,7 @@ ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv())
 
 INSTALLED_APPS = [
     'tinymce',
-    'images',
-    'bootstrap4',
-    'bootstrap4',
+    'bootstrap3',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
