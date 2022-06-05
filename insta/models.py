@@ -1,90 +1,69 @@
 from django.db import models
 from django.contrib.auth.models import User
-from cloudinary.models import CloudinaryField
+
 
 # Create your models here.
 class Profile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name='User')
-    bio = models.TextField(max_length=150, verbose_name='Bio', null=True)
-    profile_image = CloudinaryField('profile_image')
-    email_confirmed = models.BooleanField(default=False, verbose_name='Is Confirmed?')
-    date_created = models.DateTimeField(auto_now_add=True, verbose_name='Date Created')
-    date_updated = models.DateTimeField(auto_now=True, verbose_name='Date Updated')
+    user = models.OneToOneField(User, on_delete=models.CASCADE,null=True)
+    profile_photo= models.ImageField(upload_to='profiles/',null=True)
+    bio= models.CharField(max_length=240, null=True)
 
-    
-    def get_posts(self):
-        return Post.objects.filter(user=self).all()
 
-    def get_followers(self): 
-        return self.followers.all()
-
-    def get_following(self): 
-        return self.following.all()
-    
-    def __str__(self):
-        return str(self.user)
-    
-    class Meta:
-        verbose_name_plural = 'Profiles'
-        
-class Post(models.Model):
-    image = CloudinaryField('image')
-    title = models.CharField(max_length=500, verbose_name='Caption', null=False)
-    caption = models.CharField(max_length=2200, verbose_name='Caption', null=False)
-    author = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Author')
-    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, verbose_name='Profile')
-    date_created = models.DateTimeField(auto_now_add=True, verbose_name='Date Created')
-    date_updated = models.DateTimeField(auto_now=True, verbose_name='Date Updated')
-
-    def save_image(self):
+    def save_profile(self):
         self.save()
 
-    def delete_image(self):
-        self.delete()
-
-    def get_posts(self):
-        return Post.objects.filter(user=self).all()
-    
-    def get_likes(self):
-        likes = Like.objects.filter(post=self)
-        return len(likes)
-
-    def get_comments(self):
-        comments = Comment.objects.filter(post=self)
-        return comments
+    @classmethod
+    def get_profile(cls):
+        profile = Profile.objects.all()
+        return profile
 
     @classmethod
-    def update_caption(cls, id, title, caption, author, profile):
-        update = cls.objects.filter(id = id).update(title = title , caption = caption, author = author, profile = profile)
-        return update
-    
+    def find_profile(cls,search_term):
+        profile = Profile.objects.filter(user__username__icontains=search_term)
+        return profile
+
+class Image(models.Model):
+    posted_by = models.ForeignKey(User, null=True,on_delete=models.CASCADE)
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE,null=True)
+    insta_image = models.ImageField(upload_to='pics/',null=True)
+    caption = models.TextField(null=True)
+    likes = models.PositiveIntegerField(default=0)
+
+
+    @classmethod
+    def get_images(cls):
+        images = Image.objects.all()
+        return images
+
     def __str__(self):
-        return str(self.title)
-
-    class Meta:
-        verbose_name_plural = 'Posts'
-        
-        
-class Like(models.Model):
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
-    post = models.ForeignKey(Post, on_delete=models.CASCADE)
-
-class Follow(models.Model):
-    user = models.ForeignKey(User, related_name='following', on_delete=models.CASCADE)
-    following = models.ForeignKey(User, related_name='followers', on_delete=models.CASCADE)
-
+       return str(self.caption)
 
 class Comment(models.Model):
-    opinion = models.CharField(max_length=2200, verbose_name='Comment', null=False)
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
-    post = models.ForeignKey(Post, on_delete=models.CASCADE)
-
-    def display_comment(self,post_id):
-        comments = Comment.objects.filter(self = post_id)
-        return comments
+    poster = models.ForeignKey(User, on_delete=models.CASCADE,null=True)
+    image = models.ForeignKey(Image, on_delete=models.CASCADE, related_name='comments',null=True)
+    comment = models.CharField(max_length=200, null=True)
 
     def __str__(self):
-        return str(self.comment)
+        return self.comment
 
-    class Meta:
-        verbose_name_plural = 'Comments'
+    def save_comment(self):
+        self.save()
+
+    @classmethod
+    def get_comment(cls):
+        comment = Comment.objects.all()
+        return comment
+
+class Follow(models.Model):
+    users=models.ManyToManyField(User,related_name='follow')
+    current_user=models.ForeignKey(User,related_name='c_user',null=True,on_delete=models.CASCADE)
+
+    @classmethod
+    def follow(cls,current_user,new):
+        friends,created=cls.objects.get_or_create(current_user=current_user)
+        friends.users.add(new)
+
+    @classmethod
+    def unfollow(cls,current_user,new):
+        friends,created=cls.objects.get_or_create(current_user=current_user)
+        friends.users.remove(new)
