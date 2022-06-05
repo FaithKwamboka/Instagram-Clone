@@ -5,7 +5,7 @@ from .models import *
 from .forms import *
 from django.contrib.auth import login, authenticate
 from django.contrib.sites.shortcuts import get_current_site
-from django.utils.encoding import force_bytes, force_text
+from django.utils.encoding import force_bytes,force_str
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.template.loader import render_to_string
 from .tokens import account_activation_token
@@ -40,7 +40,7 @@ def signup(request):
 
 def activate(request, uidb64, token):
     try:
-        uid = force_text(urlsafe_base64_decode(uidb64))
+        uid = force_str(urlsafe_base64_decode(uidb64))
         current_user = User.objects.get(pk=uid)
     except(TypeError, ValueError, OverflowError, User.DoesNotExist):
         current_user = None
@@ -53,7 +53,7 @@ def activate(request, uidb64, token):
         return HttpResponse('Activation link is invalid!')
     
     
-@login_required(login_url='/accounts/login/')
+@login_required('/accounts/login/')
 def home(request):
     images = Image.get_images()
     comments = Comment.get_comment()
