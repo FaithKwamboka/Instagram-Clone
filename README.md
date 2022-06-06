@@ -4,6 +4,8 @@
 # Kwash Gram
 This is an app that allows users to post pics, get followers, follow other users, like and comment on posts.
 
+![gram](https://user-images.githubusercontent.com/100117264/172257832-e9e80537-8119-4914-adb1-69bea4361737.png)
+
 
 ## User Stories
 As a user of the application I should be able to:
