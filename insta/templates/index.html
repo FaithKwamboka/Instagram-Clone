@@ -21,7 +21,7 @@
           <a href="/profile/{{user.id}}">
             <label>{{image.posted_by}}</label></a>
         </div>
-        <img src="{{image.insta_image.url}}" class="card-img-top" data-target="#extraModal{{image.id}}" data-toggle="modal"style="height:400px;>
+        <img src="{{image.insta_image.url}}" class="card-img-top" data-target="#extraModal{{image.id}}" data-toggle="modal">
         <div class="card-body">
           <div class="header">
             <a id="like" href="{% url 'like' operation='like' pk=image.id%}"><i class="far fa-heart" style="margin-right:10px;color:black;"></i></a>
