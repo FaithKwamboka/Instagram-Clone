@@ -8,8 +8,7 @@
 <script src="https://use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
 <div class="container-fluid">
 
-  {% comment %} <p><a href="{% url 'add_profile' %}" class="btn btn-info">+ profile</a></p>
-  <p><a href="{% url 'upload' %}" class="btn btn-info">+ post</a></p> {% endcomment %}
+  
 
     <div class="row">
     <div class="col-1"></div>
@@ -17,8 +16,7 @@
       {% for image in images %}
 
       <div class="card mr-0" style="max-width:40rem; margin-top:10px;"><br>
-        <a href="{% url 'add_profile' %}" class="btn btn-info">+ Profile</a><br>
-        <a href="{% url 'upload' %}" class="btn btn-info">+ Post</a><br>
+        
         <div class="card-header"><img class="img-fluid rounded-circle" src="{{image.profile.profile_photo.url}}" style="height:50px;margin-top:5px;margin-bottom:5px;">
           <a href="/profile/{{user.id}}">
             <label>{{image.posted_by}}</label></a>
@@ -64,7 +62,8 @@
 
     <div class="col-2 stories" style="max-width:20rem; margin-top:20px;">
       <div class="" style="position:fixed; width:350px">
-
+        <a href="{% url 'add_profile' %}" class="btn btn-info">+ profile</a>  
+        <a href="{% url 'upload' %}" class="btn btn-info">+ post</a> 
         <header style="margin-bottom:30px;margin-top:20px;">
           {% for profile in profile %}
           {% if profile.user == user %}
