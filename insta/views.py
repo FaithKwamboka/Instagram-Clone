@@ -189,6 +189,7 @@ def all(request, pk):
     }
     return render(request, 'all.html', content)
 
+@login_required
 def follow(request,operation,id):
     current_user=User.objects.get(id=id)
     if operation=='follow':

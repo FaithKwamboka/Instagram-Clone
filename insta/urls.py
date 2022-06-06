@@ -17,6 +17,7 @@ urlpatterns = [
     re_path(r'^comment/(?P<pk>\d+)',views.add_comment,name='comment'),
     re_path(r'^like/(?P<operation>.+)/(?P<pk>\d+)',views.like, name='like'),
     re_path(r'^all/(?P<pk>\d+)', views.all, name='all'),
+    re_path(r'^follow/(?P<operation>.+)/(?P<id>\d+)',views.follow,name='follow'),
 
 ]
 
