@@ -28,7 +28,7 @@ def activate(request, uidb64, token):
         return HttpResponse('Activation link is invalid!')
     
     
-@login_required
+@login_required(login_url='/accounts/login/')
 def home(request):
     images = Image.get_images()
     comments = Comment.get_comment()
@@ -116,20 +116,20 @@ def add_profile(request):
         form = NewProfileForm()
     return render(request, 'new_profile.html', {"form": form})
 
-# @login_required
-# def update_profile(request):
-#     current_user = request.user
-#     if request.method == 'POST':
-#         form = NewProfileForm(request.POST, request.FILES)
-#         if form.is_valid():
-#             profile = form.save(commit=False)
-#             profile.user = current_user
-#             profile.save()
-#         return redirect('home')
+@login_required
+def update_profile(request):
+    current_user = request.user
+    if request.method == 'POST':
+        form = UpdateProfileForm(request.POST, request.FILES)
+        if form.is_valid():
+            profile = form.save(commit=False)
+            profile.user = current_user
+            profile.save()
+        return redirect('home')
 
-#     else:
-#         form = NewProfileForm()
-#     return render(request, 'update_profile.html', {"form": form})
+    else:
+        form = NewProfileForm()
+    return render(request, 'update_profile.html', {"form": form})
 
 
 @login_required
