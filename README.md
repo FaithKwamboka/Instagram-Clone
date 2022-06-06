@@ -65,7 +65,7 @@ After extracting the files,
 
  > ``python3 manage.py test.``
 
-## [License]()
+## [License](https://github.com/FaithKwamboka/Instagram-Clone/blob/master/LICENSE)
 
 ## Collaborate
 For any collaborations, reach me on [okongofaith3@gmail.com]()

@@ -5,8 +5,8 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     re_path(r'^$', views.home,name='home'),
-    re_path(r'^activate/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',
-        views.activate, name='activate'),
+    # re_path(r'^activate/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',
+    #     views.activate, name='activate'),
     re_path(r'^accounts/profile/', views.add_profile, name='add_profile'),
     re_path(r'^profile/(\d+)', views.profile, name='profile'),
     re_path(r'^search/', views.search_results, name='search_results'),
