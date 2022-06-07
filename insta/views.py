@@ -129,7 +129,7 @@ def update_profile(request):
 
     else:
         form = NewProfileForm()
-    return render(request, 'update_profile.html', {"form": form})
+    return render(request, 'profile_update.html', {"form": form})
 
 
 @login_required(login_url='/accounts/login/')

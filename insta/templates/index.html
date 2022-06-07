@@ -17,7 +17,7 @@
 
       <div class="card mr-0" style="max-width:40rem; margin-top:10px;"><br>
         
-        <div class="card-header"><img class="img-fluid rounded-circle" src="{{image.profile.profile_photo.url}}" style="height:50px;margin-top:5px;margin-bottom:5px;">
+        <div class="card-header"><img class="img-fluid rounded-circle" src="{{image.posted_by.profile.profile_photo.url}}" style="height:50px;margin-top:5px;margin-bottom:5px;">
           <a href="/profile/{{user.id}}">
             <label>{{image.posted_by}}</label></a>
         </div>
@@ -64,6 +64,7 @@
       <div class="" style="position:fixed; width:350px">
         <a href="{% url 'add_profile' %}" class="btn btn-info">+ profile</a>  
         <a href="{% url 'upload' %}" class="btn btn-info">+ post</a> 
+        <a href="{% url 'update_profile' %}" class="btn btn-info">Update profile</a>
         <header style="margin-bottom:30px;margin-top:20px;">
           {% for profile in profile %}
           {% if profile.user == user %}
