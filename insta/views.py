@@ -49,7 +49,7 @@ def home(request):
     return render(request,"index.html",{"images":images, "comments":comments,"form": form,"profile":profile})
 
 
-@login_required
+@login_required(login_url='/accounts/login/')
 def profile(request,profile_id):
 
     try:
@@ -63,7 +63,7 @@ def profile(request,profile_id):
     return render(request,"profile.html",{"profile":profile,"images":images})
 
 
-@login_required
+@login_required(login_url='/accounts/login/')
 def search_results(request):
     current_user = request.user
     profile = Profile.get_profile()
@@ -81,7 +81,7 @@ def search_results(request):
         return render(request,'search.html',{"message":message})
 
 
-@login_required
+@login_required(login_url='/accounts/login/')
 def get_image_by_id(request,image_id):
 
     image = Image.objects.get(id = image_id)
@@ -101,7 +101,7 @@ def get_image_by_id(request,image_id):
 
     return render(request,"pic.html", {"image":image,"comment":comment,"form": form})
 
-@login_required
+@login_required(login_url='/accounts/login/')
 def add_profile(request):
     current_user = request.user
     if request.method == 'POST':
@@ -116,7 +116,7 @@ def add_profile(request):
         form = NewProfileForm()
     return render(request, 'new_profile.html', {"form": form})
 
-@login_required
+@login_required(login_url='/accounts/login/')
 def update_profile(request):
     current_user = request.user
     if request.method == 'POST':
@@ -132,7 +132,7 @@ def update_profile(request):
     return render(request, 'update_profile.html', {"form": form})
 
 
-@login_required
+@login_required(login_url='/accounts/login/')
 def update_image(request):
     current_user = request.user
     profiles = Profile.get_profile()
@@ -151,7 +151,7 @@ def update_image(request):
             return render(request, 'upload.html', {"user": current_user, "form": form})
 
 
-@login_required
+@login_required(login_url='/accounts/login/')
 def add_comment(request, pk):
     image = get_object_or_404(Image, pk=pk)
     current_user = request.user
@@ -167,7 +167,7 @@ def add_comment(request, pk):
         form = CommentForm()
         return render(request, 'comment.html', {"user": current_user, "comment_form": form})
 
-@login_required
+@login_required(login_url='/accounts/login/')
 def like(request,operation,pk):
     image = get_object_or_404(Image,pk=pk)
     
@@ -179,7 +179,7 @@ def like(request,operation,pk):
         image.save()
     return redirect('home')
 
-@login_required
+@login_required(login_url='/accounts/login/')
 def all(request, pk):
     profile = Profile.objects.get(pk=pk)
     images = Image.objects.all().filter(posted_by_id=pk)
@@ -189,7 +189,7 @@ def all(request, pk):
     }
     return render(request, 'all.html', content)
 
-@login_required
+@login_required(login_url='/accounts/login/')
 def follow(request,operation,id):
     current_user=User.objects.get(id=id)
     if operation=='follow':
